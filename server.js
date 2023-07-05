@@ -55,8 +55,10 @@ login_io.on('connection', (socket) => {
             message = "não existe uma conta com essas credenciais";
             validate = 0;
         }
+        socket.emit('login_validation', validate, message);
+        console.log("login_validation");
     });
-    socket.emit('login_validation', validate, message);
+    
 });
 
 http.listen(3000, () => {
