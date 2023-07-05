@@ -3,50 +3,53 @@
 <head>
   <title>Login</title>
   <style>
-    .container {
-        max-width: 400px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f2f2f2;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-      
-      h1 {
-        text-align: center;
-      }
-      
-      .form-group {
-        margin-bottom: 10px;
-      }
-      
-      label {
-        display: block;
+    .center-contents {
+            font-family :'Courier New';
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+        .inputbox {
+            margin-bottom: 15px;
+        }
+        h1 {
+            font-size: 100px;
+            padding-top: 50px;
+            padding-bottom: 50;
+        }
+
+        label {
+        display:flex;
         font-weight: bold;
       }
-      
-      input[type="email"],
-      input[type="text"],
-      input[type="password"] {
-        width: 100%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-      
-       .buttonSubmit {
-        width: 100%;
-        padding: 10px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      
-      .buttonSubmit:hover {
-        background-color: #45a049;
-      }
+
+        input[type="text"]{
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+          }
+
+        .buttonSubmit {
+          width: 100%;
+          padding: 10px;
+          background-color: #4CAF50;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          margin-bottom: 10px;
+        }
+        
+        .buttonSubmit:hover {
+          background-color: #45a049;
+        }
       </style>
 </head>
 <body>
@@ -57,10 +60,10 @@
         function login_account(){
             let username = document.getElementById("login_user").value;           
             let password = document.getElementById("password").value;
-      
+            // event.preventDefault();
+            // alert('logado com sucesso!');
             socket.emit('login_enter', login_user,password);
             socket.on('login_validation', (validate, message) => {
-                console.log("oxixi");
                 if (validate == 1) {
                     alert('logado com sucesso!');
                     window.location.href = 'menu.html';
@@ -73,18 +76,17 @@
         }
     </script>
   <div class="container">
-    <h1>PONG</h1>
-    <form>
-      <div class="form-group">
+    <div class="center-contents">
+      <h1>Pong</h1>
+      <div class="username_input">
         <label for="username">Nome de Usuário ou email:</label>
-        <input type="text" id="login_user" name="login_user" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Senha:</label>
-        <input type="password" id="password" name="password" required>
+          <input class="inputbox" id="login_user" name="login_user" type="text" placeholder="exemplo@hotmail.com ou zezinho123" required>
+          <label for="password">Senha:</label>
+          <input class="inputbox" id="password" name="password" type="text" placeholder="senha" required>
       </div>
       <button onclick="login_account()" class="buttonSubmit">Login</button>
-    </form>
+      
+  </div>
     <p class="redirect-link">Ainda não possui uma conta? <a href="register.html">Registre-se aqui</a></p>
   </div>
   

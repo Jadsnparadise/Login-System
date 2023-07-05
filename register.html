@@ -62,6 +62,7 @@
           socket.emit('create_account', email,username, password)
           socket.on('create_account_validation', (validate,message) => {
               if (validate == 1) {
+                alert("Conta criada com sucesso!")
                 window.location.href = 'login.html';
               }else{
                 alert(message);
