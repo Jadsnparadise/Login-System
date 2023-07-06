@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meat charset="utf-8"></meat>
+    <title>Lobby</title>
+    <style>
+      .center-contents {
+          font-family :'Courier New';
+          text-align: center;
+      }
+      .container {
+          max-width: 400px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f2f2f2;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+        }
+      .inputbox {
+          margin-bottom: 15px;
+      }
+      .credit {
+          margin: auto 0;
+      }
+      #logo {
+          padding-top : 200px;
+      }
+      h1 {
+          font-size: 100px;
+          padding-top: 50px;
+          padding-bottom: 50;
+      }
+
+      input[type="text"]{
+          width: 100%;
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+
+      .buttonSubmit {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+      
+      .buttonSubmit:hover {
+        background-color: #45a049;
+      }
+  </style>
+</head>
+    <body>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            const socket = io('/menu');
+            let username = localStorage.getItem("username");
+
+            function verlocalstorage(){
+                alert("seu username " + username);
+            }
+
+            function create_private() {        
+                let room_code = document.getElementById("room_code").value;   
+                socket.emit('create_private', room_code)
+                socket.on('create_validation', (validate, message) => {
+                    if (validate == 1) {
+                        window.location.href = 'private/' + room_code + '/' + username;
+                    } else {
+                        alert(message);
+                        return;
+                    }
+                });
+            }
+            
+            function join_private() {
+                let room_code = document.getElementById("room_code").value;   
+                if(room_code == null || room_code == "") {
+                    alert("O nome da sala está vazio");
+                    return;
+                } 
+                
+                socket.emit('join_private', room_code);
+                socket.on('join_validation', (validate, message) => {
+                    if (validate == true) {
+                        window.location.href = 'private/' + room_code + '/' + username;
+                    } else {
+                        alert(message);
+                        return;
+                    }
+                })
+            }
+
+        </script>
+            <div class ="container">
+                <div class="center-contents">
+                <h1>Pong</h1>
+                <div class="username_input">
+                    <input class="inputbox" id="room_code" name="room_code" type="text" placeholder="Nome da Sala" required>
+                </div>
+            <button onclick="create_private();" class="buttonSubmit">Create Private Game</button>
+            <button onclick="join_private();"class="buttonSubmit">Join Private Game</button>
+            <button onclick="verlocalstorage();"class="buttonSubmit">teste</button>
+            </div>
+            </div>
+    </body>
+</html>

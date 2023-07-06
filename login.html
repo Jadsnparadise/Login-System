@@ -59,9 +59,10 @@
           let password = document.getElementById("password").value;
 
           socket.emit('login_enter', username, password)
-          socket.on('login_validation', (validate,message) => {
+          socket.on('login_validation', (validate,message,userName) => {
               if (validate == 1) {
                 alert("logado com sucesso!")
+                localStorage.setItem("username",userName);
                 window.location.href = 'menu.html';
               }else{
                 alert(message);
