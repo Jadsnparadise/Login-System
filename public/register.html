@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meat charset="utf-8"></meat>
+    <title>Lobby</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('/register');
+
+        function create_account(){
+          let email = document.getElementById("email").value;
+          let username = document.getElementById("username").value;           
+          let password = document.getElementById("password").value;
+
+          socket.emit('create_account', email,username, password)
+          socket.on('create_account_validation', (validate,message) => {
+              if (validate == 1) {
+                alert("Conta criada com sucesso!")
+                window.location.href = 'login.html';
+              }else{
+                alert(message);
+              }
+          });
+        }
+    </script>
+    <div class ="container">
+      <div class="center-contents">
+        <h1>Pong</h1>
+        <div class="username_input">
+          
+            <input class="inputbox" id="email" name="email" type="text" placeholder="email" required>
+            <input class="inputbox" id="username" name="username" type="text" placeholder="username" required>
+            <input class="inputbox" id="password" name="password" type="password" placeholder="password" required>
+        </div>
+        <button onclick="create_account()" class="buttonSubmit">Register</button>
+        
+    </div>
+    <p class="redirect-link">Já possui uma conta? <a href="login.html">Faça Login aqui</a></p>
+    </div>
+    
+</body>
+</html>

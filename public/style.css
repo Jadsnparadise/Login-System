@@ -1,0 +1,44 @@
+/* Register e Login */
+.center-contents {
+    font-family :'Courier New';
+    text-align: center;
+}
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+.inputbox {
+    margin-bottom: 15px;
+}
+h1 {
+    font-size: 100px;
+    padding-top: 50px;
+    padding-bottom: 50;
+}
+
+input[type="text"],
+     [type="password"]{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+.buttonSubmit {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.buttonSubmit:hover {
+  background-color: #45a049;
+}

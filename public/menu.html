@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meat charset="utf-8"></meat>
+    <title>Lobby</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+    <body>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            const socket = io('/menu');
+            let username = localStorage.getItem("username");
+
+            function verlocalstorage(){
+                alert("seu username " + username);
+            }
+
+            function create_private() {        
+                let room_code = document.getElementById("room_code").value;   
+                socket.emit('create_private', room_code)
+                socket.on('create_validation', (validate, message) => {
+                    if (validate == 1) {
+                        window.location.href = 'private/' + room_code + '/' + username;
+                    } else {
+                        alert(message);
+                        return;
+                    }
+                });
+            }
+            
+            function join_private() {
+                let room_code = document.getElementById("room_code").value;   
+                if(room_code == null || room_code == "") {
+                    alert("O nome da sala está vazio");
+                    return;
+                } 
+                
+                socket.emit('join_private', room_code);
+                socket.on('join_validation', (validate, message) => {
+                    if (validate == true) {
+                        window.location.href = 'private/' + room_code + '/' + username;
+                    } else {
+                        alert(message);
+                        return;
+                    }
+                })
+            }
+
+        </script>
+            <div class ="container">
+                <div class="center-contents">
+                <h1>Pong</h1>
+                <div class="username_input">
+                    <input class="inputbox" id="room_code" name="room_code" type="text" placeholder="Nome da Sala" required>
+                </div>
+            <button onclick="create_private();" class="buttonSubmit">Create Private Game</button>
+            <button onclick="join_private();"class="buttonSubmit">Join Private Game</button>
+            <button onclick="verlocalstorage();"class="buttonSubmit">teste</button>
+            </div>
+            </div>
+    </body>
+</html>

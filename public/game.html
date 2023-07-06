@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meat charset="utf-8"></meat>
+    <title>Pong</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    const socket = io('/game'); 
+    let  width = 0, height = 0, player_width = 0, player_height;
+    const pi = Math.PI;
+    const UP = 38, DOWN = 40;
+    
+    let canvas, ctx, keystate;
+    let ball;
+    let message = "";
+    let score1 = 0, score2 = 0;
+    let username = [];
+    
+    let space_down = false;
+    // envia a tecla para o servidor
+    $('body').on('keydown', (e) => {
+        socket.emit('keydown', e.keyCode);
+        console.log(e.keyCode);
+        if(e.keyCode == 32) {
+            let space = 0;
+            if(space_down == false) {
+                space = 1;
+                space_down = true;
+            } else {
+                space = 0; 
+            }
+            socket.emit('space_event', space)
+        }
+    });
+
+    $('body').on('keyup', (e) => {
+        socket.emit('keyup', e.keyCode);
+        if(e.keyCode == 32) {
+            space_down = false;
+        }
+    });
+
+    let players = [];
+    class player {
+        constructor (xpos = 0, ypos = 0) {
+            this.x = xpos;
+            this.y = ypos;
+            this.width = 0 
+            this.height = 0;
+            this.username = localStorage.getItem('username');
+        }
+        init() {
+        }
+
+        update() {
+            this.width = player_width;
+            this.height = player_height;
+        }
+
+        draw() {
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    };
+
+    ball = {
+        x: null,
+        y: null,
+        vel: null,
+        side: 0,
+        speed: 8,
+        update: function () {
+        },
+
+        draw: function() {
+            ctx.fillRect(this.x, this.y, this.side, this.side);
+        }
+    };
+
+    function init() {
+        ball.side = player_width;
+        ball.x = (width - ball.side) / 2;
+        ball.y = (height - ball.side) / 2;
+        console.log(player_width);
+        ball.vel = {
+            x: ball.speed,
+            y: 0
+        };
+    }
+    
+    function update() {
+        ball.update();
+        for(p in players) {
+            players[p].update();
+        }
+    }
+
+    function draw() {
+        ctx.fillRect(0, 0, width, height);
+        ctx.save();
+        ctx.fillStyle = "#fff";
+
+        for(p in players){
+            players[p].draw();
+        }
+
+        ball.draw();
+
+        var mid_width = 4;
+        var x = (width - mid_width) * 0.5;
+        var y = 0;
+        var step = height / 20;
+
+        // desenha a linha do meio
+        while (y < height) {
+            ctx.fillRect(x, y + step * 0.25, mid_width, step * 0.5);
+            y += step;
+        }
+
+        // Mensagens config
+        ctx.font = "30px Arial";
+            ctx.fillText(message, 0, height - 50);
+        // Pontuações
+        ctx.font = "50px Arial"
+        ctx.fillText(score1, width/4, height / 5)
+        ctx.fillText(score2, 3 * width / 4, height / 5)
+        // Usernames 
+        ctx.font = "30px Arial"
+        ctx.fillText(username[0], width/4, height / 8)
+        ctx.fillText(username[1], 3 * width / 4, height / 8)
+
+        ctx.restore();
+    }
+
+    function main() {
+        canvas = document.createElement("canvas");
+        ctx = canvas.getContext("2d");
+        document.body.appendChild(canvas);
+
+        var loop = function() {
+            canvas.width = width;
+            canvas.height = height;
+            update();
+            draw();
+            window.requestAnimationFrame(loop, canvas);
+        }
+        window.requestAnimationFrame(loop, canvas);
+    }
+
+
+    main();
+
+    socket.on('config', (config) => {
+        width         = config.screen_width;
+        height        = config.screen_height;
+        player_width  = config.player_width;
+        player_height = config.player_height;
+        end_point     = config.end_point;
+        init();
+    })
+
+    socket.on('usernames', (usernames) => {
+        username.push(usernames[0]);
+        username.push(usernames[1]);
+    })
+
+    socket.on('game_over', (msg) => {
+        message = msg;
+
+        let leave_button = document.createElement("button");
+        leave_button.innerHTML = "Volte para o Menu";
+
+        let body = document.getElementsByTagName("body")[0];
+        body.appendChild(leave_button);
+
+        leave_button.addEventListener("click", function () {
+            window.location.href = '/';
+        });
+    }) 
+
+    socket.on('score', (score_user) => {
+        console.log(score_user);
+        if(score_user == "ST_RIGHTBALL") {
+            score1 += 1;
+        } 
+        else if(score_user == "ST_LEFTBALL") {
+            score2 += 1;
+        }
+    })
+
+    // Atualiza o estado do jogo
+    socket.on('update', (ids, player_status, ball_status) => {
+        console.log('update');
+        players = [];
+        for (id of ids) {
+            if(players[id] == null || players[id] == undefined) { 
+                players[id] = new player(player_status[id].x, player_status[id].y);
+            } 
+            else {
+                players[id].x = player_status[id].x;
+                players[id].y = player_status[id].y;
+            }
+        }
+        ball.x = ball_status.x
+        ball.y = ball_status.y
+    });
+
+</script>
+</body>
+</html>

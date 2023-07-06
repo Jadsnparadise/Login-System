@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meat charset="utf-8"></meat>
+    <title>Lobby</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('/login');
+
+        function login_account(){
+          let username = document.getElementById("login_user").value;           
+          let password = document.getElementById("password").value;
+
+          socket.emit('login_enter', username, password)
+          socket.on('login_validation', (validate,message,userName) => {
+              if (validate == 1) {
+                alert("logado com sucesso!")
+                localStorage.setItem("username",userName);
+                window.location.href = 'menu.html';
+              }else{
+                alert(message);
+              }
+          });
+        }
+    </script>
+    <div class ="container">
+      <div class="center-contents">
+        <h1>Pong</h1>
+        <div class="username_input">
+            <input class="inputbox" id="login_user" name="login_user" type="text" placeholder="exemplo@hotmail.com ou zezinho123" required>
+            <input class="inputbox" id="password" name="password" type="password" placeholder="Senha" required>
+        </div>
+        <button onclick="login_account()" class="buttonSubmit">Login</button>
+        
+    </div>
+    <p class="redirect-link">Ainda não possui uma conta? <a href="register.html">Faça seu cadastro aqui</a></p>
+    </div>
+    
+</body>
+</html>

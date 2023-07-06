@@ -1,35 +1,42 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const Lobby        = require('./classes/lobby.js')
 const RoomManager  = require('./classes/room_manager.js');
 
-app.get('/login.html', (req, res) => {
-    res.sendFile(__dirname + '/login.html');
-  });
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'public'));
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/register.html');
-});
+    res.sendFile(__dirname + '/public/register.html');
+  });
+
+app.get('/login.html', (req, res) => {
+    res.sendFile(__dirname + '/public/login.html');
+  });
+
 
 app.get('/register.html', (req, res) => {
-    res.sendFile(__dirname + '/register.html');
+    res.sendFile(__dirname + '/public/register.html');
   });
 
 app.get('/menu.html', (req, res) => {
-    res.sendFile(__dirname + '/menu.html');
+    res.sendFile(__dirname + '/public/menu.html');
   });
 
 app.get('/public/:username/', (req, res) => {
-    res.sendFile(__dirname + '/game.html');
+    res.sendFile(__dirname + '/public/game.html');
     username = req.params.username;
     room_code = "public";
 });
 
 let room_codes = {}; 
 app.get('/private/:room_code/:username', (req, res) => {
-    res.sendFile(__dirname + '/game.html');
+    res.sendFile(__dirname + '/public/game.html');
     username = req.params.username;
     room_code = req.params.room_code;
 });
