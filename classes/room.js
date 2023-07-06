@@ -6,7 +6,7 @@ const config = {
     player_width,
     player_height,
     end_point
-} = require('./config.json');
+} = require('../config/config.json');
 
 const game_state = ["ST_IDLE", "ST_DISCONNECTED", "ST_ONGAME", "ST_LEFTBALL", "ST_RIGHTBALL"];
 const UP = 38, DOWN = 40, SPACE = 32;

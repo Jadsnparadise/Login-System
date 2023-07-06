@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-const Lobby        = require('./lobby.js')
-const RoomManager  = require('./room_manager.js');
+const Lobby        = require('./classes/lobby.js')
+const RoomManager  = require('./classes/room_manager.js');
 
 app.get('/login.html', (req, res) => {
     res.sendFile(__dirname + '/login.html');
